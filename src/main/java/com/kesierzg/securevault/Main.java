@@ -16,22 +16,18 @@ import java.io.File;
 public class Main extends Application {
 
     private final File vaultFile = new File(System.getProperty("user.dir"), "vault.json");
-
     private VaultService vault;
-
     private TableView<PasswordEntry> tableView = new TableView<>();
-
     private boolean hideSensitive = true;
 
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("SecureVault");
-
-        if (vaultFile.exists()) {
-            vault = VaultService.loadFromFile(vaultFile, "master123");
-        } else {
-            vault = new VaultService("master123");
-        }
+        PasswordField loginField = new PasswordField();
+        Button loginButton = new Button("Zaloguj");
+        VBox loginBox = new VBox(10, new Label("Podaj hasło:"), loginField, loginButton);
+        loginBox.setPadding(new Insets(20));
+        loginBox.setVisible(true);
 
         TableColumn<PasswordEntry, String> websiteCol = new TableColumn<>("Website");
         websiteCol.setCellValueFactory(new PropertyValueFactory<>("website"));
@@ -44,13 +40,11 @@ public class Main extends Application {
 
         tableView.getColumns().addAll(websiteCol, usernameCol, passwordCol);
 
-        refreshTable();
+        Button addBtn = new Button("dodaj");
+        Button removeBtn = new Button("usuń");
+        Button editBtn = new Button("edytuj");
 
-        Button addBtn = new Button("Add Entry");
-        Button removeBtn = new Button("Remove Entry");
-        Button editBtn = new Button("Edit Entry");
-
-        CheckBox hideCheck = new CheckBox("Hide Username/Password");
+        CheckBox hideCheck = new CheckBox("ukryj dane");
         hideCheck.setSelected(true);
         hideCheck.selectedProperty().addListener((obs, oldV, newV) -> {
             hideSensitive = newV;
@@ -61,7 +55,7 @@ public class Main extends Application {
         buttonsBox.setPadding(new Insets(10));
 
         BorderPane root = new BorderPane();
-        root.setCenter(tableView);
+        root.setCenter(loginBox);
         root.setBottom(buttonsBox);
         BorderPane.setMargin(tableView, new Insets(10));
 
@@ -100,9 +94,23 @@ public class Main extends Application {
 
         Scene scene = new Scene(root, 700, 400);
         primaryStage.setScene(scene);
-
+        loginButton.setOnAction(e -> {
+            String password = loginField.getText();
+            if (vaultFile.exists()) {
+                try {
+                    vault = VaultService.loadFromFile(vaultFile, password);
+                } catch (Exception ex) {
+                    loginField.clear();
+                    return;
+                }
+            } else {
+                vault = new VaultService(password);
+            }
+            root.setCenter(tableView);
+            root.setBottom(buttonsBox);
+            refreshTable();
+        });
         primaryStage.setOnCloseRequest(event -> vault.saveToFile(vaultFile));
-
         primaryStage.show();
     }
 
@@ -120,7 +128,7 @@ public class Main extends Application {
     private PasswordEntry showEntryDialog(PasswordEntry existing) {
         Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.setTitle(existing == null ? "Add Entry" : "Edit Entry");
+        dialog.setTitle(existing == null ? "dodaj" : "edytuj");
 
         TextField websiteField = new TextField();
         TextField usernameField = new TextField();
@@ -137,12 +145,12 @@ public class Main extends Application {
         grid.setHgap(10);
         grid.setPadding(new Insets(10));
 
-        grid.addRow(0, new Label("Website:"), websiteField);
-        grid.addRow(1, new Label("Username:"), usernameField);
-        grid.addRow(2, new Label("Password:"), passwordField);
+        grid.addRow(0, new Label("Strona:"), websiteField);
+        grid.addRow(1, new Label("Nazwa użytkownika:"), usernameField);
+        grid.addRow(2, new Label("Hasuo:"), passwordField);
 
         Button okBtn = new Button("OK");
-        Button cancelBtn = new Button("Cancel");
+        Button cancelBtn = new Button("ANULUJ");
         HBox buttons = new HBox(10, okBtn, cancelBtn);
 
         VBox vbox = new VBox(10, grid, buttons);

@@ -17,7 +17,7 @@ public class ImportService {
         JsonNode items = root.get("items");
         if (items != null && items.isArray()) {
             for (JsonNode item : items) {
-                if (item.get("type").asInt() == 1 && item.has("login")) { // 1 = login type
+                if (item.get("type").asInt() == 1 && item.has("login")) {
                     String site = item.get("name").asText("");
                     String username = item.get("login").get("username").asText("");
                     String password = item.get("login").get("password").asText("");

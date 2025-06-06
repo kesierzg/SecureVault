@@ -27,7 +27,7 @@ public class VaultService {
             this.key = encryptionService.generateKeyFromPassword(masterPassword, salt);
             this.iv = encryptionService.generateIv();
         } catch (Exception e) {
-            throw new RuntimeException("Error during encryption initialization", e);
+            throw new RuntimeException("nie udao sie zaszyfrowac :(", e);
         }
     }
 
@@ -37,7 +37,7 @@ public class VaultService {
             this.key = encryptionService.generateKeyFromPassword(masterPassword, salt);
             this.iv = iv;
         } catch (Exception e) {
-            throw new RuntimeException("Error during encryption initialization", e);
+            throw new RuntimeException("nie udao sie zaszyfrowac :(", e);
         }
     }
 
@@ -47,7 +47,7 @@ public class VaultService {
             String encPassword = encryptionService.encrypt(password, key, iv);
             passwordEntries.add(new PasswordEntry(website, encUsername, encPassword));
         } catch (Exception e) {
-            throw new RuntimeException("Error encrypting entry", e);
+            throw new RuntimeException("nie udao sie zaszyfrowac :(", e);
         }
     }
 
@@ -59,7 +59,7 @@ public class VaultService {
                 String decPassword = encryptionService.decrypt(entry.getPassword(), key, iv);
                 decrypted.add(new PasswordEntry(entry.getWebsite(), decUsername, decPassword));
             } catch (Exception e) {
-                throw new RuntimeException("Error decrypting entry", e);
+                throw new RuntimeException("nie udao sie rozszyfrowac :(", e);
             }
         }
         return decrypted;
@@ -78,7 +78,7 @@ public class VaultService {
             );
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
         } catch (IOException e) {
-            throw new RuntimeException("Error saving database to file", e);
+            throw new RuntimeException("nie udao sie zapisac zmian", e);
         }
     }
 
@@ -91,7 +91,7 @@ public class VaultService {
             vault.passwordEntries.addAll(data.entries);
             return vault;
         } catch (IOException e) {
-            System.err.println("NiE wCzYtAnOoO s PoWodU blEeeEndUUuu :(( : " + e.getMessage());
+            System.err.println("NiE wCzYtAnOoO s PoWodU blEeeEndUUuu :((" + e.getMessage());
             throw new RuntimeException("eRooR BaaaZyyy dAAnych", e);
         }
     }
@@ -145,7 +145,7 @@ public class VaultService {
             this.iv = newIv;
             this.salt = newSalt;
         } catch (Exception e) {
-            throw new RuntimeException("Error changing master password", e);
+            throw new RuntimeException("nie udao sie zminic hasua :(", e);
         }
     }
 
@@ -167,7 +167,7 @@ public class VaultService {
                     passwordEntries.set(i, new PasswordEntry(newWebsite, encUsername, encPassword));
                     return true;
                 } catch (Exception ex) {
-                    throw new RuntimeException("Error encrypting entry", ex);
+                    throw new RuntimeException("nie udao sie zaszyfrofac pliku :(", ex);
                 }
             }
         }

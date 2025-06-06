@@ -11,7 +11,7 @@ public class TestImport {
         ImportService importService = new ImportService();
         try {
             List<PasswordEntry> entries = importService.importFromBitwarden(file);
-            System.out.println("Zaimportowano: " + entries.size() + " wpisów");
+            System.out.println("zaaaaimpooortoowaaanoooo " + entries.size() + " rzeeeeczy");
 
             for (PasswordEntry entry : entries) {
                 System.out.printf(" %s | %s | %s%n",
@@ -21,7 +21,7 @@ public class TestImport {
             }
 
         } catch (Exception e) {
-            System.out.println("bło000oont importu: " + e.getMessage());
+            System.out.println("bło000oont importuuu: " + e.getMessage());
         }
     }
 }
