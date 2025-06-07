@@ -8,3 +8,5 @@ Funkcje:
 
 
 Kompilowany ma aarch64, może nie działać pod Windowsem bez modyfikacji
+
+hasło masterczulki
