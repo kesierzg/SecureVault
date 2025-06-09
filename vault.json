@@ -1,5 +1,21 @@
 {
-  "salt" : "qxHDkcEVaWr15QSFttEFeA==",
-  "iv" : "rvedMOSFJiHIqBEFlj/NEA==",
-  "entries" : [ ]
+  "salt" : "66tsoeg/ulh6J+Yp9pWdoQ==",
+  "iv" : "+6ZcH73RlR/d0lYKmUyTzw==",
+  "entries" : [ {
+    "website" : "nk.pl",
+    "username" : "XS6eceBIt1aO3eI+grgYig==",
+    "password" : "EKb4TF9jbEvTGXUsucfSdg=="
+  }, {
+    "website" : "google.com",
+    "username" : "zD7QYuhkbB17aYMKerJLA+IwUln0wu5erRIhCdEwgKA=",
+    "password" : "1woOTRl+EpRMoKCA9C0VwcOcHH6QyxV43/mS/6qe8jBFj0FcYhGFtEsjrQV256OO"
+  }, {
+    "website" : "wykop.pl",
+    "username" : "ysdCYi6C/pW4C3OrGEIZGA==",
+    "password" : "QkjsllvMDcBAUiaLKw72zV3imUk7ZZ/DHyL0W37oRwc="
+  } ],
+  "notes" : [ {
+    "title" : "tajemnica",
+    "content" : "nesquik to gringle"
+  } ]
 }

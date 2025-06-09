@@ -1,7 +1,11 @@
 plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'java'
+}
+application {
+    mainClass = 'com.kesierzg.securevault.Main'
 }
 
 group = 'com.kesierzg'
@@ -22,12 +26,40 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
+def platform = 'mac-aarch64'
+
 dependencies {
+    implementation "org.openjfx:javafx-controls:21.0.1:${platform}"
+    implementation "org.openjfx:javafx-fxml:21.0.1:${platform}"
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.2'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.16.2'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.16.2'
 }
 
-application {
-    mainClass = 'com.kesierzg.securevault.Main'
+jar {
+    manifest {
+        attributes(
+                'Main-Class': application.mainClass
+        )
+    }
+}
+
+shadowJar {
+    mergeServiceFiles()
+    manifest {
+        attributes 'Main-Class': application.mainClass
+    }
+}
+
+
+run {
+    jvmArgs += [
+            "--module-path", classpath.asPath,
+            "--add-modules", "javafx.controls,javafx.fxml"
+    ]
+}
+
+tasks.named('shadowJar') {
+    mergeServiceFiles()
+    archiveClassifier.set('all')
 }

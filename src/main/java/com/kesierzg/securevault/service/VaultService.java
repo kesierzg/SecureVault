@@ -1,4 +1,7 @@
 package com.kesierzg.securevault.service;
+import com.kesierzg.securevault.model.NoteEntry;
+import java.util.List;
+import java.util.ArrayList;
 import com.kesierzg.securevault.model.PasswordEntry;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,6 +23,30 @@ public class VaultService {
     private byte[] iv;
     private byte[] salt;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final List<NoteEntry> notes = new ArrayList<>();
+
+    public List<NoteEntry> getNotes() {
+        return new ArrayList<>(notes);
+    }
+
+    public void addNote(String title, String content) {
+        notes.add(new NoteEntry(title, content));
+    }
+
+    public boolean removeNoteByTitle(String title) {
+        return notes.removeIf(n -> n.getTitle().equals(title));
+    }
+
+    public boolean editNote(String oldTitle, String newTitle, String newContent) {
+        for (int i = 0; i < notes.size(); i++) {
+            NoteEntry n = notes.get(i);
+            if (n.getTitle().equals(oldTitle)) {
+                notes.set(i, new NoteEntry(newTitle, newContent));
+                return true;
+            }
+        }
+        return false;
+    }
 
     public VaultService(String masterPassword) {
         try {
@@ -74,7 +101,8 @@ public class VaultService {
             EncryptedVaultData data = new EncryptedVaultData(
                     salt,
                     iv,
-                    passwordEntries
+                    passwordEntries,
+                    notes
             );
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
         } catch (IOException e) {
@@ -89,6 +117,10 @@ public class VaultService {
             EncryptedVaultData data = mapper.readValue(file, EncryptedVaultData.class);
             VaultService vault = new VaultService(masterPassword, data.getSaltBytes(), data.getIvBytes());
             vault.passwordEntries.addAll(data.entries);
+            if (data.notes != null) {
+                vault.notes.clear();
+                vault.notes.addAll(data.notes);
+            }
             return vault;
         } catch (IOException e) {
             System.err.println("NiE wCzYtAnOoO s PoWodU blEeeEndUUuu :((" + e.getMessage());
@@ -101,21 +133,25 @@ public class VaultService {
         public String salt;
         public String iv;
         public List<PasswordEntry> entries;
+        public List<NoteEntry> notes;
 
         @JsonCreator
         public EncryptedVaultData(
                 @JsonProperty("salt") String salt,
                 @JsonProperty("iv") String iv,
-                @JsonProperty("entries") List<PasswordEntry> entries) {
+                @JsonProperty("entries") List<PasswordEntry> entries,
+                @JsonProperty("notes") List<NoteEntry> notes) {
             this.salt = salt;
             this.iv = iv;
             this.entries = entries;
+            this.notes = notes != null ? notes : new ArrayList<>();
         }
 
-        public EncryptedVaultData(byte[] salt, byte[] iv, List<PasswordEntry> entries) {
+        public EncryptedVaultData(byte[] salt, byte[] iv, List<PasswordEntry> entries, List<NoteEntry> notes) {
             this.salt = Base64.getEncoder().encodeToString(salt);
             this.iv = Base64.getEncoder().encodeToString(iv);
             this.entries = entries;
+            this.notes = notes != null ? notes : new ArrayList<>();
         }
         @JsonIgnore
         public byte[] getSaltBytes() {

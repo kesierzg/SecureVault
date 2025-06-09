@@ -1,4 +1,5 @@
 package com.kesierzg.securevault.service;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kesierzg.securevault.model.PasswordEntry;
